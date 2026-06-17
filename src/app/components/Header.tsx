@@ -3,7 +3,7 @@ import profileImage from "../../assets/profile.jpg";
 
 export function Header() {
   return (
-    <section className="header-section flex gap-8 items-start p-8 border-b border-zinc-700">
+    <section className="header-section flex gap-8 items-start px-8 pb-8 pt-10 border-b border-zinc-700">
       <div className="flex-shrink-0">
         <div className="w-32 h-40 bg-zinc-800 rounded-lg overflow-hidden border border-zinc-700">
           <img

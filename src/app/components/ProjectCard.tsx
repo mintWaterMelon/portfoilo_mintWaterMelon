@@ -3,7 +3,7 @@ import { Github, ExternalLink, Calendar, PlayCircle } from "lucide-react";
 
 interface TroubleShooting {
   title: string;
-  problem: ReactNode;
+  problem: ReactNode | ReactNode[];
   solution: ReactNode[];
 }
 
@@ -11,6 +11,7 @@ interface ProjectImage {
   src: string;
   alt: string;
   caption?: string;
+  variant?: "wide" | "phone";
 }
 
 interface ContributionSection {
@@ -26,6 +27,8 @@ interface Project {
   resultVideoUrl?: string;
   period: string;
   summary: string;
+  contributionTitle?: string;
+  imageTitle?: string;
   contributions?: string[];
   contributionSections?: ContributionSection[];
   techStack: string[];
@@ -38,13 +41,26 @@ interface ProjectCardProps {
   index: number;
 }
 
-export function ProjectCard({ project, index }: ProjectCardProps) {
-  return (
-    <div
-      className="project-card border border-zinc-700 rounded-xl overflow-hidden"
-      style={{ pageBreakInside: "avoid", breakInside: "avoid" }}
+function renderParagraphs(content: ReactNode | ReactNode[]) {
+  const paragraphs = Array.isArray(content) ? content : [content];
+
+  return paragraphs.map((paragraph, index) => (
+    <p
+      key={index}
+      className="text-zinc-400 mt-1"
+      style={{ fontSize: "0.8125rem", lineHeight: "1.7" }}
     >
-      <div className="flex min-h-64">
+      {paragraph}
+    </p>
+  ));
+}
+
+export function ProjectCard({ project, index }: ProjectCardProps) {
+  const hasPhoneImage = project.images.some((image) => image.variant === "phone");
+
+  return (
+    <div className="project-card border border-zinc-700 rounded-xl overflow-hidden">
+      <div className="project-overview flex min-h-64">
         <div className="flex-1 p-6 border-r border-zinc-700" style={{ minWidth: 0 }}>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-3">
             <h3 className="text-zinc-100" style={{ fontSize: "1.125rem", fontWeight: 700 }}>
@@ -54,6 +70,8 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
             <div className="flex items-center gap-2">
               <a
                 href={project.githubUrl}
+                target="_blank"
+                rel="noreferrer"
                 className="flex items-center gap-1 text-cyan-400 hover:text-cyan-300 transition-colors flex-shrink-0"
                 style={{ fontSize: "0.75rem" }}
               >
@@ -62,44 +80,42 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
               </a>
 
               {project.notionUrl && (
-                <>
-                  <a
-                    href={project.notionUrl}
-                    className="flex items-center gap-1 text-zinc-400 hover:text-cyan-300 transition-colors flex-shrink-0"
-                    style={{ fontSize: "0.75rem" }}
-                  >
-                    <ExternalLink size={12} />
-                    Notion
-                  </a>
-                </>
+                <a
+                  href={project.notionUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-1 text-zinc-400 hover:text-cyan-300 transition-colors flex-shrink-0"
+                  style={{ fontSize: "0.75rem" }}
+                >
+                  <ExternalLink size={12} />
+                  Notion
+                </a>
               )}
 
               {project.swaggerUrl && (
-                <>
-                  <a
-                    href={project.swaggerUrl}
-                    className="flex items-center gap-1 text-zinc-400 hover:text-cyan-300 transition-colors flex-shrink-0"
-                    style={{ fontSize: "0.75rem" }}
-                  >
-                    <ExternalLink size={12} />
-                    Server swagger
-                  </a>
-                </>
+                <a
+                  href={project.swaggerUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-1 text-zinc-400 hover:text-cyan-300 transition-colors flex-shrink-0"
+                  style={{ fontSize: "0.75rem" }}
+                >
+                  <ExternalLink size={12} />
+                  Server Swagger
+                </a>
               )}
 
               {project.resultVideoUrl && (
-                <>
-                  <a
-                    href={project.resultVideoUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center gap-1 text-red-400 hover:text-red-300 transition-colors flex-shrink-0"
-                    style={{ fontSize: "0.75rem" }}
-                  >
-                    <PlayCircle size={12} />
-                    Result Video
-                  </a>
-                </>
+                <a
+                  href={project.resultVideoUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-1 text-red-400 hover:text-red-300 transition-colors flex-shrink-0"
+                  style={{ fontSize: "0.75rem" }}
+                >
+                  <PlayCircle size={12} />
+                  Result Video
+                </a>
               )}
             </div>
           </div>
@@ -126,7 +142,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
                 letterSpacing: "0.04em",
               }}
             >
-              내가 기여한 부분
+              {project.contributionTitle ?? "구현 내용"}
             </h4>
 
             {project.contributionSections ? (
@@ -180,7 +196,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
           </div>
         </div>
 
-        <div className="p-4 flex flex-col gap-3" style={{ width: "300px", flexShrink: 0 }}>
+        <div className="p-4 flex flex-col gap-3" style={{ width: hasPhoneImage ? "330px" : "300px", flexShrink: 0 }}>
           <h4
             className="text-cyan-400 mb-1"
             style={{
@@ -190,17 +206,23 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
               letterSpacing: "0.04em",
             }}
           >
-            전처리 과정
+            {project.imageTitle ?? "프로젝트 이미지"}
           </h4>
 
-          <div className="grid grid-cols-1 gap-2 flex-1">
+          <div className="grid grid-cols-2 gap-2 flex-1">
             {project.images.map((img, i) => (
               <figure
                 key={i}
-                className="bg-zinc-700 rounded-lg overflow-hidden border border-zinc-600"
+                className={`bg-zinc-700 rounded-lg overflow-hidden border border-zinc-600 ${img.variant === "wide" ? "col-span-2" : ""
+                  }`}
               >
                 {img.src ? (
-                  <img src={img.src} alt={img.alt} className="w-full object-cover" />
+                  <img
+                    src={img.src}
+                    alt={img.alt}
+                    className="block w-full object-cover"
+                    style={{ aspectRatio: img.variant === "phone" ? "9/18" : "16/9" }}
+                  />
                 ) : (
                   <div className="text-center text-zinc-500 p-2">
                     <div className="text-xs">스크린샷 {i + 1}</div>
@@ -221,12 +243,12 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
         </div>
       </div>
 
-      <div className="border-t border-zinc-700 p-6 bg-zinc-800/50">
+      <section className="troubleshooting-section border-t border-zinc-700 p-6 bg-zinc-800/50">
         <h4
           className="text-cyan-400 mb-4"
           style={{
-            fontSize: "0.8125rem",
-            fontWeight: 600,
+            fontSize: "0.95rem",
+            fontWeight: 700,
             textTransform: "uppercase",
             letterSpacing: "0.04em",
           }}
@@ -234,29 +256,27 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
           트러블슈팅
         </h4>
 
-        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${Math.min(project.troubleShooting.length, 2)}, 1fr)` }}>
+        <div className="grid gap-5">
           {project.troubleShooting.map((ts, i) => (
-            <div key={i} className="bg-zinc-800 rounded-lg p-4 border border-zinc-700/60">
-              <p className="text-zinc-100 mb-2" style={{ fontSize: "0.875rem", fontWeight: 600 }}>
-                🔴 {ts.title}
+            <div key={i} className="troubleshooting-card bg-zinc-800 rounded-lg p-5 border border-zinc-700/60">
+              <p className="text-zinc-100 mb-3" style={{ fontSize: "0.95rem", fontWeight: 700 }}>
+                {i + 1}. {ts.title}
               </p>
 
-              <div className="space-y-2">
+              <div className="space-y-4">
                 <div>
                   <span
                     className="text-zinc-500"
                     style={{
                       fontSize: "0.75rem",
-                      fontWeight: 600,
+                      fontWeight: 700,
                       textTransform: "uppercase",
                       letterSpacing: "0.04em",
                     }}
                   >
                     문제 배경
                   </span>
-                  <p className="text-zinc-400 mt-0.5" style={{ fontSize: "0.8125rem", lineHeight: "1.6" }}>
-                    {ts.problem}
-                  </p>
+                  <div className="space-y-2">{renderParagraphs(ts.problem)}</div>
                 </div>
 
                 <div>
@@ -264,14 +284,14 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
                     className="text-cyan-500"
                     style={{
                       fontSize: "0.75rem",
-                      fontWeight: 600,
+                      fontWeight: 700,
                       textTransform: "uppercase",
                       letterSpacing: "0.04em",
                     }}
                   >
                     해결 방법
                   </span>
-                  <ul className="list-disc pl-5 space-y-1 text-zinc-300 mt-0.5" style={{ fontSize: "0.8125rem", lineHeight: "1.6" }}>
+                  <ul className="list-disc pl-5 space-y-1.5 text-zinc-300 mt-1" style={{ fontSize: "0.8125rem", lineHeight: "1.7" }}>
                     {ts.solution.map((solution, i) => (
                       <li key={i}>{solution}</li>
                     ))}
@@ -281,7 +301,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
             </div>
           ))}
         </div>
-      </div>
+      </section>
     </div>
   );
 }

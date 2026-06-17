@@ -9,6 +9,11 @@ import wbcPreprocessing2 from "../assets/wbc-preprocessing-2.png";
 import wbcPreprocessing3 from "../assets/wbc-preprocessing-3.png";
 import wbcPreprocessing4 from "../assets/wbc-preprocessing-4.png";
 
+import uvmanagerHome from "../assets/uvmanager-home.jpg";
+import uvmanagerSetting from "../assets/uvmanager-setting.jpg";
+import uvmanagerSwagger from "../assets/uvmanager-swagger.png";
+import uvmanagerDocker from "../assets/uvmanager-docker.png";
+
 function Emphasis({ children }: { children: ReactNode }) {
   return (
     <span className="underline underline-offset-4 decoration-cyan-400 decoration-2">
@@ -30,6 +35,8 @@ function InlineCode({ children }: { children: ReactNode }) {
 const projects: Project[] = [
   {
     title: "WBC Counting Project",
+    contributionTitle: "내가 기여한 부분",
+    imageTitle: "전처리 과정",
     githubUrl: "https://github.com/mintWaterMelon/wbc-counting-project",
     notionUrl: "https://app.notion.com/p/Note-WBC-Counting-Project-35fa085df4c280418bc9f215f549ee2e",
     resultVideoUrl:
@@ -97,28 +104,35 @@ const projects: Project[] = [
         src: wbcPreprocessing1,
         alt: "원본 촬영 영상",
         caption: "1. 원본 촬영 영상",
+        variant: "wide",
       },
       {
         src: wbcPreprocessing2,
         alt: "CLAHE RGB 히스토그램 밝기 보정",
         caption: "2. CLAHE(RGB Histogram) 밝기 보정",
+        variant: "wide",
       },
       {
         src: wbcPreprocessing3,
         alt: "LDC 에지 검출",
         caption: "3. LDC(Edge Detection)",
+        variant: "wide",
       },
       {
         src: wbcPreprocessing4,
         alt: "색상 반전 및 혈관 분할",
         caption: "4. 색상 반전 및 혈관 분할",
+        variant: "wide",
       },
     ],
     troubleShooting: [
       {
         title: "백혈구 중복 카운팅 및 누락 문제",
-        problem:
-          "복원 영상 내에서 백혈구가 매우 빠르게 이동하거나, 밀집된 영역에서 객체 간 겹침이 발생할 때 고유 ID(Track ID)가 풀리거나 새로 부여되어 동일 개체를 중복 카운팅하거나 계수가 누락되는 현상 발생.",
+        problem: [
+          <>
+            복원 영상 내에서 백혈구가 매우 빠르게 이동하거나, 밀집된 영역에서 객체 간 겹침이 발생할 때 고유 ID(Track ID)가 풀리거나 새로 부여되어 동일 개체를 중복 카운팅하거나 계수가 누락되는 현상 발생.
+          </>,
+        ],
         solution: [
           <>
             YOLOv8의 추적 옵션<InlineCode>persist=True</InlineCode>을 활성화하고, 단순 매칭 대신 칼만 필터(Kalman Filter)를 통해 객체의 가속도와 모션 힌트를 예측하는 추적 파이프라인(ByteTrack/BoT-SORT)을 결합.
@@ -130,9 +144,14 @@ const projects: Project[] = [
       },
       {
         title: "이미지 대비 보정 중 발생하는 노이즈 증폭 및 색상 왜곡",
-        problem:
-          "모세혈관 영상의 조명 불균형을 해결하기 위해 영상 전반에 히스토그램 평활화(Histogram Equalization)를 적용했으나, 배경에 숨어있던 미세 노이즈까지 함께 증폭되거나 혈관 조직 고유의 색상이 튀는 왜곡 현상 발생.  원본 RGB 채널 전체에 일괄적으로 대비 보정을 가하면서, 각 색상 채널(R, G, B)의 고유 비율이 깨져 색상 왜곡이 일어났고, 전체 프레임 기준 연산으로 인해 국소적인 명암 차이를 잡지 못함.",
-
+        problem: [
+          <>
+            모세혈관 영상의 조명 불균형을 해결하기 위해 영상 전반에 히스토그램 평활화(Histogram Equalization)를 적용했으나, 배경에 숨어있던 미세 노이즈까지 함께 증폭되거나 혈관 조직 고유의 색상이 튀는 왜곡 현상 발생.
+          </>,
+          <>
+            원본 RGB 채널 전체에 일괄적으로 대비 보정을 가하면서, 각 색상 채널(R, G, B)의 고유 비율이 깨져 색상 왜곡이 일어났고, 전체 프레임 기준 연산으로 인해 국소적인 명암 차이를 잡지 못함.
+          </>,
+        ],
         solution: [
           <>
             이미지의 색상 정보와 밝기 정보를 완전히 분리하기 위해 RGB 영상을 LAB 색상 공간으로 변환.
@@ -146,6 +165,8 @@ const projects: Project[] = [
   },
   {
     title: "UV Manager App",
+    contributionTitle: "구현 내용",
+    imageTitle: "앱 화면 및 배포 환경",
     githubUrl: "https://github.com/mintWaterMelon/uvmanager",
     swaggerUrl: "https://uvmanager.onrender.com/swagger-ui/index.html",
     period: "2025.09 ~ 2026.01(Render 서버 배포), 2026.04 ~ 진행중",
@@ -205,16 +226,42 @@ const projects: Project[] = [
       "AWS",
     ],
     images: [
-      { src: "", alt: "1. home 화면" },
-      { src: "", alt: "2. 설정 화면" },
-      { src: "", alt: "Swagger API 문서" },
-      { src: "", alt: "Docker 실행 화면(백엔드, DB)" },
+      {
+        src: uvmanagerHome,
+        alt: "UV Manager 홈 화면",
+        caption: "1. 홈 화면",
+        variant: "phone",
+      },
+      {
+        src: uvmanagerSetting,
+        alt: "UV Manager 설정 화면",
+        caption: "2. 설정 화면",
+        variant: "phone",
+      },
+      {
+        src: uvmanagerSwagger,
+        alt: "Swagger API 문서",
+        caption: "3. Swagger API 문서",
+        variant: "wide",
+      },
+      {
+        src: uvmanagerDocker,
+        alt: "Docker 실행 화면",
+        caption: "4. Docker 실행 화면(백엔드, DB)",
+        variant: "wide",
+      },
     ],
     troubleShooting: [
       {
         title: "기상청 API의 시간 단위 데이터 불일치",
-        problem:
-          "자외선 지수와 단기예보 데이터는 제공 기준 시간이 다르고, 내일·모레 화면에서도 현재 시점 기준으로 바로 사용할 수 없는 값이 존재 함",
+        problem: [
+          <>
+            자외선 지수와 단기예보 데이터는 제공 기준 시간이 다르고, 내일·모레 화면에서도 현재 시점 기준으로 바로 사용할 수 없는 값이 존재 함
+          </>,
+          <>
+            이로 인해 대시보드가 실패하거나 자외선 값이 비어 보이는 문제 발생
+          </>,
+        ],
         solution: [
           <>
             선택 날짜를 그대로 기준 시간으로 요청하는 방식 대신, 백엔드에서 먼저 사용 가능한 최신 기준 시간으로 데이터를 요청하도록 변경
@@ -232,8 +279,11 @@ const projects: Project[] = [
       },
       {
         title: "날짜 전환 시 반복 요청으로 인한 느린 로딩",
-        problem:
-          "홈 화면에서 오늘, 내일, 모레 버튼을 전환할 때마다 여러 API 요청이 반복되어 앱 화면 전환이 느려짐",
+        problem: [
+          <>
+            홈 화면에서 오늘, 내일, 모레 버튼을 전환할 때마다 여러 API 요청이 반복되어 앱 화면 전환이 느려짐
+          </>,
+        ],
         solution: [
           <>
             이미 불러온 대시보드 데이터를 재사용할 수 있도록 클라이언트 측 캐싱 도입
@@ -272,9 +322,14 @@ export default function App() {
               Projects
             </h2>
 
-            <div className="space-y-8">
+            <div className="space-y-10">
               {projects.map((project, index) => (
-                <ProjectCard key={project.title} project={project} index={index} />
+                <div
+                  key={project.title}
+                  className={index > 0 ? "pt-10 border-t border-zinc-700" : ""}
+                >
+                  <ProjectCard project={project} index={index} />
+                </div>
               ))}
             </div>
           </section>
@@ -301,14 +356,30 @@ export default function App() {
             print-color-adjust: exact;
           }
 
+          .header-section {
+            padding-top: 3rem !important;
+          }
+
           .project-section {
             page-break-before: always;
             break-before: page;
+            padding-top: 18mm !important;
           }
 
-          .project-card {
+          .project-overview {
             page-break-inside: avoid;
             break-inside: avoid;
+          }
+
+          .troubleshooting-section {
+            page-break-before: always;
+            break-before: page;
+            min-height: 245mm;
+          }
+
+          .troubleshooting-card {
+            page-break-inside: auto;
+            break-inside: auto;
           }
         }
 
