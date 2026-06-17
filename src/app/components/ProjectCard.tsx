@@ -209,29 +209,32 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
             {project.imageTitle ?? "프로젝트 이미지"}
           </h4>
 
-          <div className="grid grid-cols-2 gap-2 flex-1">
+          <div className="grid grid-cols-2 gap-2">
             {project.images.map((img, i) => (
               <figure
                 key={i}
-                className={`bg-zinc-700 rounded-lg overflow-hidden border border-zinc-600 ${img.variant === "wide" ? "col-span-2" : ""
+                className={`self-start rounded-lg overflow-hidden border border-zinc-600 ${img.variant === "wide" ? "col-span-2" : ""
                   }`}
               >
                 {img.src ? (
                   <img
                     src={img.src}
                     alt={img.alt}
-                    className="block w-full object-cover"
-                    style={{ aspectRatio: img.variant === "phone" ? "9/18" : "16/9" }}
+                    className="block w-full object-cover bg-zinc-800"
+                    style={{ aspectRatio: img.variant === "phone" ? "9/16" : "16/9" }}
                   />
                 ) : (
-                  <div className="text-center text-zinc-500 p-2">
+                  <div
+                    className="flex items-center justify-center text-center text-zinc-500 p-2 bg-zinc-800"
+                    style={{ aspectRatio: img.variant === "phone" ? "9/16" : "16/9" }}
+                  >
                     <div className="text-xs">스크린샷 {i + 1}</div>
                   </div>
                 )}
 
                 {img.caption && (
                   <figcaption
-                    className="px-2 py-1.5 bg-zinc-900/90 text-zinc-300 border-t border-zinc-700"
+                    className="px-2 py-1.5 bg-zinc-900/95 text-zinc-200 border-t border-zinc-700"
                     style={{ fontSize: "0.68rem", lineHeight: "1.35" }}
                   >
                     {img.caption}

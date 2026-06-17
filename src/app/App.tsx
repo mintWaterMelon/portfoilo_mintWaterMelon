@@ -350,6 +350,7 @@ export default function App() {
 
       <style>{`
         @media print {
+        html,
           body {
             background: #18181b !important;
             -webkit-print-color-adjust: exact;
@@ -363,7 +364,7 @@ export default function App() {
           .project-section {
             page-break-before: always;
             break-before: page;
-            padding-top: 18mm !important;
+            padding-top: 14mm !important;
           }
 
           .project-overview {
@@ -374,12 +375,17 @@ export default function App() {
           .troubleshooting-section {
             page-break-before: always;
             break-before: page;
-            min-height: 245mm;
+            min-height: auto;
+            padding-bottom: 0 !important;
           }
 
           .troubleshooting-card {
             page-break-inside: auto;
             break-inside: auto;
+          }
+
+          .print-bottom-space {
+            display: none !important;
           }
         }
 
